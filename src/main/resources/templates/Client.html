@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>PharmaFinder | Search</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .hero-section {
+        background: linear-gradient(135deg, #00b09b, #96c93d);
+        color: white;
+        padding: 60px 0;
+      }
+      .search-card {
+        margin-top: -40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .med-card:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="hero-section text-center">
+      <h1>💊 PharmaFinder</h1>
+      <p>Search for available medicines in your local pharmacies</p>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 search-card bg-white p-4">
+          <form action="/client/search" method="GET" class="d-flex">
+            <input
+              type="text"
+              name="name"
+              class="form-control form-control-lg me-2"
+              placeholder="Search for Medicine (e.g. Paracetamol)..."
+              th:value="${searchQuery}"
+            />
+            <button type="submit" class="btn btn-success btn-lg">Search</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <h3 th:if="${searchQuery}" class="mb-4">
+          Results for "<span th:text="${searchQuery}"></span>"
+        </h3>
+
+        <div class="row">
+          <div
+            class="col-12 text-center"
+            th:if="${#lists.isEmpty(medicines) and searchQuery != null}"
+          >
+            <div class="alert alert-warning">
+              Sorry, we couldn't find any medicine matching that name.
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-4" th:each="med : ${medicines}">
+            <div class="card h-100 med-card">
+              <div class="card-body">
+                <h5 class="card-title text-success" th:text="${med.name}">
+                  Medicine Name
+                </h5>
+                <p class="text-muted small mb-1">
+                  Available at:
+                  <strong
+                    class="text-success"
+                    th:text="${med.pharmacy.pharmacyName}"
+                    >Pharmacy Name</strong
+                  >
+                </p>
+                <p class="text-muted mb-3" style="font-size: 0.85rem">
+                  📍 Location:
+                  <span th:text="${med.pharmacy.location}">Location</span>
+                </p>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center">
+                  <span
+                    class="h4 mb-0 text-primary"
+                    th:text="${med.price + ' ETB'}"
+                  ></span>
+                  <span
+                    class="badge bg-secondary"
+                    th:text="${'Qty: ' + med.quantity}"
+                  ></span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0 pb-3">
+                <button class="btn btn-outline-success w-100">
+                  Contact Pharmacy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
