@@ -13,6 +13,4 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     // For the Dashboard
     List<Medicine> findByPharmacy(Pharmacy pharmacy);
 
-    // For the Popularity List
-    List<Medicine> findTop3ByOrderBySearchCountDesc();
 }

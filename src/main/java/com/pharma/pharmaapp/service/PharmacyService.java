@@ -14,15 +14,12 @@ public class PharmacyService {
         this.pharmacyRepository = pharmacyRepository;
     }
 
-    // Register a new pharmacy business
     public Pharmacy register(Pharmacy pharmacy) {
         return pharmacyRepository.save(pharmacy);
     }
 
-    // Login logic Validates username and password against the database
     public Pharmacy login(String username, String password) {
-        // .orElse(null) converts the Optional<Pharmacy> into a regular Pharmacy object
-        // If the username is not found, 'pharmacy' becomes null.
+
         Pharmacy pharmacy = pharmacyRepository.findByUsername(username).orElse(null);
 
         if (pharmacy != null && pharmacy.getPassword().equals(password)) {
@@ -31,7 +28,6 @@ public class PharmacyService {
         return null;
     }
 
-    // Helper method to find a pharmacy by ID
     public Optional<Pharmacy> findById(Long id) {
         return pharmacyRepository.findById(id);
     }

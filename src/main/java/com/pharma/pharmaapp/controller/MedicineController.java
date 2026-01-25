@@ -7,25 +7,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/medicine")
+@RequestMapping("/api/medicines")
 public class MedicineController {
 
     private final MedicineService medicineService;
 
+    // Standard constructor injection
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
     }
 
-    // Pharmacy adds medicine
+    // Endpoint for pharmacy inventory management
     @PostMapping("/add")
-    public Medicine add(
-            @RequestBody Medicine medicine) {
+    public Medicine addMedicine(@RequestBody Medicine medicine) {
         return medicineService.save(medicine);
     }
 
-    // Client searches medicine
+    // Primary search logic for patients/clients
     @GetMapping("/search")
-    public List<Medicine> search(@RequestParam String name) {
+    public List<Medicine> searchMedicine(@RequestParam String name) {
         return medicineService.searchByName(name);
     }
 }

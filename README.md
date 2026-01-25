@@ -1,4 +1,4 @@
-# 🏥 MedSignal: Pharmacy Medicine Availability System
+# 🏥 RxLocate: Pharmacy Medicine Availability System
 
 ### 📌 Project Overview
 

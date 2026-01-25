@@ -24,7 +24,6 @@ public class PharmacyManagementController {
     @Autowired
     private PharmacyRepository pharmacyRepository;
 
-    // --- 1. REGISTRATION PAGE ---
     @GetMapping("/register")
     public String showRegisterPage() {
         return "pharmacy-register";
@@ -37,7 +36,7 @@ public class PharmacyManagementController {
             @RequestParam String phoneNumber,
             @RequestParam String username,
             @RequestParam String password,
-            @RequestParam(required = false) String googleMapLink) { // Added Map Link
+            @RequestParam(required = false) String googleMapLink) {
         Pharmacy pharmacy = new Pharmacy();
         pharmacy.setPharmacyName(pharmacyName);
         pharmacy.setLocation(location);
@@ -45,13 +44,12 @@ public class PharmacyManagementController {
         pharmacy.setPhoneNumber(phoneNumber);
         pharmacy.setUsername(username);
         pharmacy.setPassword(password);
-        pharmacy.setGoogleMapLink(googleMapLink); // Saving the map link
+        pharmacy.setGoogleMapLink(googleMapLink);
 
         pharmacyRepository.save(pharmacy);
         return "redirect:/pharmacy/login?registered=true";
     }
 
-    // --- 2. LOGIN PAGE ---
     @GetMapping("/login")
     public String showLoginPage() {
         return "pharmacy-login";
@@ -66,7 +64,6 @@ public class PharmacyManagementController {
         Optional<Pharmacy> pharmacyOpt = pharmacyRepository.findByUsername(username);
 
         if (pharmacyOpt.isPresent() && pharmacyOpt.get().getPassword().equals(password)) {
-            // Store the full object in session
             session.setAttribute("loggedInPharmacy", pharmacyOpt.get());
             return "redirect:/pharmacy/dashboard";
         }
@@ -75,7 +72,6 @@ public class PharmacyManagementController {
         return "pharmacy-login";
     }
 
-    // --- 3. DASHBOARD ---
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         Pharmacy loggedInPharmacy = (Pharmacy) session.getAttribute("loggedInPharmacy");
@@ -85,19 +81,19 @@ public class PharmacyManagementController {
         }
 
         List<Medicine> medicines = medicineService.findByPharmacy(loggedInPharmacy);
-
         model.addAttribute("medicines", medicines);
         model.addAttribute("pharmacyName", loggedInPharmacy.getPharmacyName());
 
         return "pharmacy-dashboard";
     }
 
-    // --- 4. MEDICINE MANAGEMENT ---
     @PostMapping("/add-medicine")
     public String addMedicine(@RequestParam String name,
             @RequestParam double price,
             @RequestParam int quantity,
             @RequestParam String expiryDate,
+            @RequestParam String brandCountry,
+            @RequestParam String dosage,
             HttpSession session) {
 
         Pharmacy loggedInPharmacy = (Pharmacy) session.getAttribute("loggedInPharmacy");
@@ -108,6 +104,10 @@ public class PharmacyManagementController {
         medicine.setName(name);
         medicine.setPrice(price);
         medicine.setQuantity(quantity);
+
+        // CRITICAL FIX: These lines save the data to the object
+        medicine.setBrandCountry(brandCountry);
+        medicine.setDosage(dosage);
 
         if (expiryDate != null && !expiryDate.isEmpty()) {
             medicine.setExpiryDate(LocalDate.parse(expiryDate));
@@ -128,7 +128,6 @@ public class PharmacyManagementController {
         return "redirect:/pharmacy/dashboard";
     }
 
-    // --- 5. LOGOUT ---
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

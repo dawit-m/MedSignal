@@ -14,50 +14,50 @@ public class UssdService {
         this.medicineService = medicineService;
     }
 
-    public String process(String sessionId, String text) { // Line 17
+    public String process(String sessionId, String text) {
 
         // 1. MAIN MENU
+        // When the user first dials the code, text is empty
         if (text == null || text.isEmpty()) {
-            return "CON Welcome to PharmaFinder\n1. Search Medicine\n2. Popular Medicines";
+            return "CON Welcome to RxLocate Ethiopia\n1. Search Medicine Info\n2. About Service";
         }
 
-        // 2. OPTION 1
+        // 2. OPTION 1: INITIAL SEARCH PROMPT
         if (text.equals("1")) {
             return "CON Enter medicine name:";
         }
 
-        // 3. SEARCH LOGIC
+        // 3. SEARCH LOGIC (Triggers when user sends 1*MedicineName)
         if (text.startsWith("1*")) {
             String medicineName = text.substring(2);
             List<Medicine> results = medicineService.searchByName(medicineName);
 
-            // If results is null or empty, stop here instead of crashing
+            // Handle case where medicine is not found
             if (results == null || results.isEmpty()) {
-                return "END Sorry, " + medicineName + " not found.";
+                return "END Sorry, " + medicineName + " is not available in our database.";
             }
 
+            // Get the first matching medicine object
             Medicine med = results.get(0);
-            return "END Found: " + med.getName() +
-                    "\nPrice: " + med.getPrice() + " ETB" +
-                    "\nQty: " + med.getQuantity();
+
+            // Extract Pharmacy details via the Relationship (OOP)
+            String pharmacyName = med.getPharmacy().getPharmacyName();
+            String pharmacyPhone = med.getPharmacy().getPhoneNumber();
+
+            // Return professional formatted string to the user's phone
+            return "END " + med.getName() + " (" + med.getDosage() + ")\n" +
+                    "Price: " + med.getPrice() + " ETB\n" +
+                    "Origin: " + med.getBrandCountry() + "\n" +
+                    "Pharmacy: " + pharmacyName + "\n" +
+                    "Call: " + pharmacyPhone;
         }
 
-        // 4. OPTION 2: POPULAR MEDICINES
+        // 4. OPTION 2: ABOUT THE SYSTEM
         if (text.equals("2")) {
-            List<Medicine> popular = medicineService.getTopMedicines();
-            if (popular.isEmpty()) {
-                return "END No searches recorded yet.";
-            }
-
-            StringBuilder response = new StringBuilder("END Popular Medicines:\n");
-            for (int i = 0; i < popular.size(); i++) {
-                Medicine med = popular.get(i);
-                response.append((i + 1)).append(". ").append(med.getName())
-                        .append(" (").append(med.getSearchCount()).append(" searches)\n");
-            }
-            return response.toString();
+            return "END RxLocate Ethiopia: Connecting patients to pharmacies offline. Developed for Biomedical Engineering Final Project.";
         }
 
-        return "END Invalid input";
+        // Default response for invalid inputs
+        return "END Invalid input. Please try again by dialing the code.";
     }
 }

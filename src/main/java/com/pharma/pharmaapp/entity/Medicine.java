@@ -2,7 +2,6 @@ package com.pharma.pharmaapp.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -22,13 +21,20 @@ public class Medicine {
     @Column(nullable = false)
     private int quantity;
 
-    private int searchCount = 0;
-
+    // Fixed: Explicitly mapping Java variable to MySQL column with underscore
+    @Column(name = "brand_country")
     private String brandCountry;
+
+    // Explicitly mapping dosage column
+    @Column(name = "dosage")
+    private String dosage;
 
     @Column(name = "expiry_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
+
+    // Keeping your image_path mapping in case you use it later
+    @Column(name = "image_path")
     private String imagePath;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -72,20 +78,20 @@ public class Medicine {
         this.quantity = quantity;
     }
 
-    public int getSearchCount() {
-        return searchCount;
-    }
-
-    public void setSearchCount(int searchCount) {
-        this.searchCount = searchCount;
-    }
-
     public String getBrandCountry() {
         return brandCountry;
     }
 
     public void setBrandCountry(String brandCountry) {
         this.brandCountry = brandCountry;
+    }
+
+    public String getDosage() {
+        return dosage;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
     }
 
     public LocalDate getExpiryDate() {

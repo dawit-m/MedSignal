@@ -3,95 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Find Medicine | MedSignal</title>
+    <title>Find Medicine | RxLocate</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
+      :root {
+        --rx-teal: #006064;
+        --rx-dark: #00363a;
+        --rx-soft: #f8fafc;
+      }
       body {
         background-color: #f4f7f6;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Segoe UI", Tahoma, sans-serif;
       }
       .navbar {
-        background-color: #2ecc71 !important;
+        background-color: var(--rx-dark) !important;
+        padding: 15px 0;
       }
       .search-hero {
         background: white;
-        padding: 50px 0;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 30px;
+        padding: 60px 0;
+        border-bottom: 1px solid #e0e0e0;
+        margin-bottom: 40px;
+      }
+      .btn-search {
+        background-color: var(--rx-teal);
+        color: white;
+        font-weight: bold;
+      }
+      .btn-search:hover {
+        background-color: var(--rx-dark);
+        color: white;
       }
       .med-card {
         border: none;
         border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         background: white;
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border-top: 4px solid var(--rx-teal);
+        height: 100%;
       }
-      /* Styled Toggle Button */
+      .price-tag {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--rx-dark);
+      }
+      .label-text {
+        color: #94a3b8;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: block;
+        margin-bottom: 2px;
+      }
       details summary {
         list-style: none;
         display: block;
-        background-color: #2ecc71;
-        color: white;
-        padding: 12px;
+        background-color: #f1f5f9;
+        color: var(--rx-teal);
+        padding: 10px;
         border-radius: 8px;
         text-align: center;
         cursor: pointer;
-        font-weight: bold;
-        transition: 0.3s;
-        user-select: none;
-      }
-      details summary:hover {
-        background-color: #27ae60;
-      }
-      details summary::-webkit-details-marker {
-        display: none;
+        font-weight: 700;
+        border: 1px solid #e2e8f0;
+        font-size: 0.85rem;
       }
       .info-box {
-        background-color: #f9f9f9;
-        border-radius: 10px;
+        background-color: #fcfcfc;
+        border-radius: 12px;
         padding: 15px;
         margin-top: 10px;
-        border-left: 5px solid #2ecc71;
+        border: 1px solid #eee;
       }
       .map-btn {
         display: block;
-        background-color: #3498db;
+        background-color: #0288d1;
         color: white;
         text-align: center;
         padding: 10px;
-        border-radius: 6px;
+        border-radius: 8px;
         text-decoration: none;
         margin-top: 10px;
-        font-weight: 600;
-      }
-      .map-btn:hover {
-        background-color: #2980b9;
-        color: white;
-      }
-      .label-text {
-        color: #7f8c8d;
+        font-weight: 700;
         font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
       }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-dark shadow-sm">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="/">🌿 MedSignal</a>
+        <a class="navbar-brand fw-bold" href="/">🩺 RxLocate</a>
       </div>
     </nav>
 
     <div class="search-hero text-center">
       <div class="container">
-        <h1 class="fw-bold mb-3">Find Your Medicine</h1>
-        <p class="text-muted">
-          Enter the name of the medicine you are looking for.
+        <h1 class="fw-bold mb-2">Medicine Finder</h1>
+        <p class="text-muted fs-5">
+          Check real-time availability in your local pharmacies.
         </p>
 
         <form
@@ -99,17 +114,17 @@
           method="GET"
           class="row justify-content-center mt-4"
         >
-          <div class="col-md-6">
-            <div class="input-group input-group-lg">
+          <div class="col-md-7">
+            <div class="input-group input-group-lg shadow-sm">
               <input
                 type="text"
                 name="name"
-                class="form-control"
-                placeholder="Search (e.g. Paracetamol)..."
+                class="form-control border-0"
+                placeholder="Enter medicine name..."
                 th:value="${searchQuery}"
                 required
               />
-              <button class="btn btn-dark px-4" type="submit">Search</button>
+              <button class="btn btn-search px-5" type="submit">Search</button>
             </div>
           </div>
         </form>
@@ -117,49 +132,75 @@
     </div>
 
     <div class="container pb-5">
-      <div class="row" th:if="${medicines != null}">
-        <div class="col-md-4" th:each="med : ${medicines}">
+      <div
+        class="row"
+        th:if="${medicines != null and !#lists.isEmpty(medicines)}"
+      >
+        <div class="col-md-4 mb-4" th:each="med : ${medicines}">
           <div class="med-card">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <h4 class="fw-bold mb-0" th:text="${med.name}">Medicine</h4>
-              <span class="badge bg-success" th:text="${med.price + ' ETB'}"
-                >0.00</span
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h4 class="fw-bold mb-0 text-dark" th:text="${med.name}">
+                  Medicine
+                </h4>
+                <div
+                  class="text-muted fw-bold small"
+                  th:text="${med.dosage != null and med.dosage != '' ? med.dosage : 'Dosage Unknown'}"
+                ></div>
+              </div>
+              <div class="text-end">
+                <span class="price-tag" th:text="${med.price}">0.00</span>
+                <small
+                  class="fw-bold d-block text-muted"
+                  style="font-size: 0.65rem"
+                  >ETB</small
+                >
+              </div>
+            </div>
+
+            <hr class="text-light" />
+
+            <div class="row mb-4">
+              <div class="col-6">
+                <span class="label-text">Brand Origin</span>
+                <p class="mb-0 fw-bold text-dark small">
+                  🌍
+                  <span
+                    th:text="${med.brandCountry != null and med.brandCountry != '' ? med.brandCountry : 'Unknown'}"
+                  ></span>
+                </p>
+              </div>
+              <div class="col-6 text-end">
+                <span class="label-text">Status</span>
+                <p class="mb-0 text-success fw-bold small">✓ In Stock</p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <span class="label-text">Pharmacy</span>
+              <p
+                class="mb-0 text-dark fw-bold"
+                th:text="${med.pharmacy.pharmacyName}"
               >
-            </div>
-
-            <div class="mt-3 mb-3">
-              <p class="mb-1 text-dark">
-                <span class="label-text">Pharmacy Name:</span><br />
-                🏥
-                <strong th:text="${med.pharmacy.pharmacyName}"
-                  >Pharmacy Name</strong
-                >
+                Kenema
               </p>
-
-              <p class="text-muted small mb-0">
-                <span class="label-text">Location:</span><br />
-                📍
-                <span th:text="${med.pharmacy.location}"
-                  >Pharmacy Location</span
-                >
+              <p class="text-muted small" th:text="${med.pharmacy.location}">
+                Addis Ababa
               </p>
             </div>
-
-            <hr />
 
             <details>
-              <summary>📞 Contact Pharmacy</summary>
-              <div class="info-box">
+              <summary>View Contact Info</summary>
+              <div class="info-box text-center">
+                <span class="label-text">Phone Number</span>
                 <p class="mb-2">
-                  <strong>📱 Phone:</strong><br />
                   <a
                     th:href="'tel:' + ${med.pharmacy.phoneNumber}"
-                    class="text-success fw-bold text-decoration-none"
+                    class="text-dark fw-bold text-decoration-none fs-5"
                     th:text="${med.pharmacy.phoneNumber}"
                     >+251...</a
                   >
                 </p>
-
                 <div
                   th:if="${med.pharmacy.googleMapLink != null and !med.pharmacy.googleMapLink.isEmpty()}"
                 >
@@ -168,7 +209,7 @@
                     target="_blank"
                     class="map-btn"
                   >
-                    🗺️ View on Google Maps
+                    📍 Open in Google Maps
                   </a>
                 </div>
               </div>
@@ -179,12 +220,15 @@
 
       <div
         th:if="${searchQuery != null and #lists.isEmpty(medicines)}"
-        class="text-center mt-5"
+        class="text-center mt-5 py-5 bg-white rounded-4 shadow-sm"
       >
         <h3 class="text-muted">
-          No medicines found for "<span th:text="${searchQuery}"></span>"
+          No results for "<span th:text="${searchQuery}"></span>"
         </h3>
-        <p>Please check the spelling or try another medicine.</p>
+        <p>Double check the spelling or try another medicine.</p>
+        <a href="/client/search" class="btn btn-outline-secondary btn-sm mt-2"
+          >Clear Search</a
+        >
       </div>
     </div>
   </body>

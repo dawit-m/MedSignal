@@ -38,14 +38,12 @@ public class MedicineService {
     public List<Medicine> searchByName(String name) {
         List<Medicine> results = medicineRepository.findByNameContainingIgnoreCase(name);
         for (Medicine med : results) {
-            med.setSearchCount(med.getSearchCount() + 1);
             medicineRepository.save(med);
         }
         return results;
     }
 
-    // 6. Get Top 3 Most Searched
-    public List<Medicine> getTopMedicines() {
-        return medicineRepository.findTop3ByOrderBySearchCountDesc();
+    public Medicine findById(Long id) {
+        return medicineRepository.findById(id).orElse(null);
     }
 }
