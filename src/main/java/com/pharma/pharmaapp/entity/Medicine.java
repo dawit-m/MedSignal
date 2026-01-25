@@ -34,9 +34,6 @@ public class Medicine {
     private LocalDate expiryDate;
 
     // Keeping your image_path mapping in case you use it later
-    @Column(name = "image_path")
-    private String imagePath;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pharmacy_id", nullable = false)
     private Pharmacy pharmacy;
@@ -100,14 +97,6 @@ public class Medicine {
 
     public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public Pharmacy getPharmacy() {

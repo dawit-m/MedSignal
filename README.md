@@ -13,7 +13,6 @@
 - **🏢 Pharmacy Ecosystem:** Secure registration and login for pharmacy owners.
 - **💊 Smart Inventory:** Medicine posting with price, quantity, and expiry tracking.
 - **🔍 Intelligent Search:** Patient-facing search with Case-Insensitive Keyword Matching.
-- **📈 Demand Tracking:** Logic to track "Search Counts" to see which medicines are most needed.
 - **📱 Universal Access (USSD):** Integrated logic for a text-based menu (simulating `*881#`).
 - **📍 Geo-Location:** Integration with Google Maps for pharmacy navigation.
 
@@ -46,7 +45,7 @@
 
 ### ⚙️ Installation
 
-1. Create a MySQL schema named `pharma_app`.
+1. Create a MySQL schema named `RxLocate`.
 2. Update `application.properties` with your MySQL credentials.
 3. Run `PharmaappApplication.java`.
 4. Access at `http://localhost:8080`.
