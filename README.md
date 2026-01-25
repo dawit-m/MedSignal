@@ -2,7 +2,7 @@
 
 ### 📌 Project Overview
 
-**PharmaConnect** is a professional Java-based Web Application designed to solve a critical healthcare gap in Ethiopia: **medicine accessibility**. It provides a centralized digital bridge where pharmacies manage inventory and patients find life-saving medications instantly.
+**RxLocate** is a professional Java-based Web Application designed to solve a critical healthcare gap in Ethiopia: **medicine accessibility**. It provides a centralized digital bridge where pharmacies manage inventory and patients find life-saving medications instantly.
 
 > **Architecture:** Built using **Spring Boot**, following the **MVC (Model-View-Controller)** design pattern.
 
